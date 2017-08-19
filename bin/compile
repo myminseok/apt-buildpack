@@ -75,14 +75,23 @@ topic "complete fakechroot"
 #/tmp/app/.apt
 CHROOT_DIR="$BUILD_DIR/.apt"
 mkdir -p $CHROOT_DIR/bin
+mkdir -p $CHROOT_DIR/usr/bin
 mkdir -p $CHROOT_DIR/lib
 mkdir -p $CHROOT_DIR/etc
 mkdir -p $CHROOT_DIR/var/lib
+mkdir -p $CHROOT_DIR/root
+
 cp  /bin/* $CHROOT_DIR/bin/
+cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
 cp -R /lib/* $CHROOT_DIR/lib/
 cp -R /etc/passwd  $CHROOT_DIR/etc/
 cp -R /etc/apt $CHROOT_DIR/etc/
 #cp -R /var/lib/dpkg $CHROOT_DIR/var/lib
+cp /home/vcap/.bashrc $CHROOT_DIR/root/
+
+
+cp /etc/bash.bashrc .
+cp -R /etc/bash_completion.d/ .
 
 # fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
 #pwd
@@ -132,6 +141,15 @@ export CPPPATH="\$INCLUDE_PATH"
 export PKG_CONFIG_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:\$APP_HOME/.apt/usr/lib/i386-linux-gnu/pkgconfig:\$APP_HOME/.apt/usr/lib/pkgconfig:\$PKG_CONFIG_PATH"
 
 EOF
+
+cat <<EOF >$BUILD_DIR/fakeroot.sh
+fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
+source /root/.bashrc
+# EDITOR=vim R
+export EDITOR=vim
+
+EOF
+chmod 777 $BUILD_DIR/fakeroot.sh
 
 
 #give environment to later buildpacks
