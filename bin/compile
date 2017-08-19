@@ -77,47 +77,46 @@ topic "setting up fakechroot"
 CHROOT_DIR="$BUILD_DIR/.apt"
 mkdir -p $CHROOT_DIR/bin
 mkdir -p $CHROOT_DIR/sbin
-mkdir -p $CHROOT_DIR/usr/bin
-mkdir -p $CHROOT_DIR/usr/lib
-mkdir -p $CHROOT_DIR/usr/share
+mkdir -p $CHROOT_DIR/usr
 mkdir -p $CHROOT_DIR/lib
 mkdir -p $CHROOT_DIR/etc
 mkdir -p $CHROOT_DIR/var/lib/dpkg/updates
 mkdir -p $CHROOT_DIR/var/lib/dpkg/info
 mkdir -p $CHROOT_DIR/var/log
 mkdir -p $CHROOT_DIR/var/cache/apt/archives
-
 mkdir -p $CHROOT_DIR/root
 mkdir -p $CHROOT_DIR/tmp
 mkdir -p $CHROOT_DIR/dev
 
 
-cp  /bin/* $CHROOT_DIR/bin/
+cp -R /bin/* $CHROOT_DIR/bin/
 cp -R /sbin/* $CHROOT_DIR/sbin/
-
 cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
 cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
 
-#cp -R /lib/* $CHROOT_DIR/lib/
-ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
+cp -R /usr/lib/gcc/* $CHROOT_DIR/usr/lib/gcc
+cp -R /usr/lib/apt/* $CHROOT_DIR/usr/lib/apt
+cp -R /usr/include/* $CHROOT_DIR/usr/include
 cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
 cp /var/lib/dpkg/status $CHROOT_DIR/var/lib/dpkg/status
-touch $CHROOT_DIR/var/lib/dpkg/status
 
+cp -R /usr/share/perl/*  $CHROOT_DIR/usr/share/perl
+cp -R /usr/share/perl5/*  $CHROOT_DIR/usr/share/perl5
+cp -R /usr/lib/perl/*  $CHROOT_DIR/usr/lib/perl
+cp -R /usr/lib/perl5/*  $CHROOT_DIR/usr/lib/perl5
 
+cp -R /usr/share/debconf/* $CHROOT_DIR/usr/share/debconf
 
-cp -R /usr/share/perl*  $CHROOT_DIR/usr/share/
-cp -R /usr/lib/perl*  $CHROOT_DIR/usr/lib/
-cp -R /usr/share/debconf $CHROOT_DIR/usr/share/
-
-cp -R /etc/passwd  $CHROOT_DIR/etc/
-cp -R /etc/apt $CHROOT_DIR/etc/
-cp  /etc/hosts $CHROOT_DIR/etc/
-cp /etc/debconf.conf $CHROOT_DIR/etc/
+cp /etc/passwd  $CHROOT_DIR/etc/
+cp -R /etc/apt/* $CHROOT_DIR/etc/apt
+cp /etc/hosts $CHROOT_DIR/etc/hosts
+cp /etc/group $CHROOT_DIR/etc/group
+cp /etc/bash.bashrc $CHROOT_DIR/etc/bash.bashrc
+cp /etc/debconf.conf $CHROOT_DIR/etc/debconf.conf
 
 ln -s /proc $CHROOT_DIR/proc
 ln -s /dev/pts $CHROOT_DIR/dev
-cp /home/vcap/.bashrc $CHROOT_DIR/root/
+cp /home/vcap/.bashrc $CHROOT_DIR/root/.bashrc
 
 
 topic "complete fakechroot: $CHROOT_DIR"
