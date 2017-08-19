@@ -149,6 +149,7 @@ export PKG_CONFIG_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:\$APP
 EOF
 
 cat <<EOF >$BUILD_DIR/.apt/fakeroot.sh
+source $HOME/app/.profile.d/000_apt.sh
 fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
 EOF
 chmod 777 $BUILD_DIR/.apt/fakeroot.sh
@@ -156,6 +157,14 @@ chmod 777 $BUILD_DIR/.apt/fakeroot.sh
 cat <<EOF >$BUILD_DIR/.apt/R.sh
 source /root/.bashrc
 export EDITOR=vim
+cd /usr/lib/R/etc
+
+rm Renviron
+cp Renviron.orig Renviron
+rm Makeconf
+ln -s /etc/R/Makeconf Makeconf
+rm ldpaths
+ln -s /etc/R/ldpaths ldpaths
 R
 EOF
 chmod 777 $BUILD_DIR/.apt/R.sh
