@@ -1,5 +1,5 @@
+ build-essentia
 libpq-dev
 postgresql-client
 libc6-dev
-g++
 r-base

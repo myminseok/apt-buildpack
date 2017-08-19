@@ -98,9 +98,10 @@ cp -R /sbin/* $CHROOT_DIR/sbin/
 cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
 cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
 
-cp -R /lib/* $CHROOT_DIR/lib/
+#cp -R /lib/* $CHROOT_DIR/lib/
 ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
 cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
+cp /var/lib/dpkg/status $CHROOT_DIR/var/lib/dpkg/status
 touch $CHROOT_DIR/var/lib/dpkg/status
 
 
@@ -166,6 +167,8 @@ export APP_HOME="\$HOME/app"
 export PATH="\$APP_HOME/.apt/usr/bin:\$APP_HOME/.apt/usr/sbin:/sbin:/usr/sbin:\$PATH"
 export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt/usr/lib/i386-linux-gnu:\$APP_HOME/.apt/usr/lib:\$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/fakechroot:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="/lib/x86_64-linux-gnu:/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/lib/R/lib:/usr/lib/R/modules/:/usr/lib/R/library/class/libs:$LD_LIBRARY_PATH"
+
 export LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt/usr/lib/i386-linux-gnu:\$APP_HOME/.apt/usr/lib:\$LIBRARY_PATH"
 export INCLUDE_PATH="\$APP_HOME/.apt/usr/include:\$INCLUDE_PATH"
 export INCLUDE_PATH="/usr/include:/usr/share/R/include:/usr/lib/R/library/Matrix/include:\$INCLUDE_PATH"
