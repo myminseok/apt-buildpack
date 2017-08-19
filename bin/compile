@@ -102,11 +102,8 @@ cp -R /usr/include/* $CHROOT_DIR/usr/include
 cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
 cp /var/lib/dpkg/status $CHROOT_DIR/var/lib/dpkg/status
 
-cp -R /usr/share/perl/*  $CHROOT_DIR/usr/share/perl
-cp -R /usr/share/perl5/*  $CHROOT_DIR/usr/share/perl5
-cp -R /usr/lib/perl/*  $CHROOT_DIR/usr/lib/perl
-cp -R /usr/lib/perl5/*  $CHROOT_DIR/usr/lib/perl5
-
+cp -R /usr/share/perl*  $CHROOT_DIR/usr/share/
+cp -R /usr/lib/perl*  $CHROOT_DIR/usr/lib/
 cp -R /usr/share/debconf/* $CHROOT_DIR/usr/share/debconf
 
 cp /etc/passwd  $CHROOT_DIR/etc/
