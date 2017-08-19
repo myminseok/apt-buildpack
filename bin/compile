@@ -78,6 +78,8 @@ CHROOT_DIR="$BUILD_DIR/.apt"
 mkdir -p $CHROOT_DIR/bin
 mkdir -p $CHROOT_DIR/sbin
 mkdir -p $CHROOT_DIR/usr
+mkdir -p $CHROOT_DIR/usr/lib
+mkdir -p $CHROOT_DIR/usr/share
 mkdir -p $CHROOT_DIR/lib
 mkdir -p $CHROOT_DIR/etc
 mkdir -p $CHROOT_DIR/var/lib/dpkg/updates
