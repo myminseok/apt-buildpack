@@ -79,14 +79,17 @@ mkdir -p $CHROOT_DIR/bin
 mkdir -p $CHROOT_DIR/sbin
 mkdir -p $CHROOT_DIR/usr/bin
 mkdir -p $CHROOT_DIR/usr/lib
+mkdir -p $CHROOT_DIR/usr/share
 mkdir -p $CHROOT_DIR/lib
 mkdir -p $CHROOT_DIR/etc
 mkdir -p $CHROOT_DIR/var/lib/dpkg/updates
 mkdir -p $CHROOT_DIR/var/lib/dpkg/info
 mkdir -p $CHROOT_DIR/var/log
+mkdir -p $CHROOT_DIR/var/cache/apt/archives
+
 mkdir -p $CHROOT_DIR/root
 mkdir -p $CHROOT_DIR/tmp
-mkdir -p $CHROOT_DIR/dev/pts
+mkdir -p $CHROOT_DIR/dev
 
 
 cp  /bin/* $CHROOT_DIR/bin/
@@ -98,15 +101,21 @@ cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
 cp -R /lib/* $CHROOT_DIR/lib/
 ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
 cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
+touch $CHROOT_DIR/var/lib/dpkg/status
 
-ln -s /proc $CHROOT_DIR/proc
 
+
+cp -R /usr/share/perl*  $CHROOT_DIR/usr/share/
+cp -R /usr/lib/perl*  $CHROOT_DIR/usr/lib/
+cp -R /usr/share/debconf $CHROOT_DIR/usr/share/
 
 cp -R /etc/passwd  $CHROOT_DIR/etc/
 cp -R /etc/apt $CHROOT_DIR/etc/
 cp  /etc/hosts $CHROOT_DIR/etc/
+cp /etc/debconf.conf $CHROOT_DIR/etc/
 
-
+ln -s /proc $CHROOT_DIR/proc
+ln -s /dev/pts $CHROOT_DIR/dev
 cp /home/vcap/.bashrc $CHROOT_DIR/root/
 
 
@@ -159,6 +168,7 @@ export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt
 export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/fakechroot:\$LD_LIBRARY_PATH"
 export LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt/usr/lib/i386-linux-gnu:\$APP_HOME/.apt/usr/lib:\$LIBRARY_PATH"
 export INCLUDE_PATH="\$APP_HOME/.apt/usr/include:\$INCLUDE_PATH"
+export INCLUDE_PATH="/usr/include:/usr/share/R/include:/usr/lib/R/library/Matrix/include:\$INCLUDE_PATH"
 export CPATH="\$INCLUDE_PATH"
 export CPPPATH="\$INCLUDE_PATH"
 export PKG_CONFIG_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:\$APP_HOME/.apt/usr/lib/i386-linux-gnu/pkgconfig:\$APP_HOME/.apt/usr/lib/pkgconfig:\$PKG_CONFIG_PATH"
