@@ -31,7 +31,7 @@ function indent() {
 
 
 
-export PATH="$BUILD_DIR/.apt/usr/bin:/usr/sbin:$PATH"
+export PATH="$BUILD_DIR/.apt/usr/bin:/sbin:/usr/sbin:$PATH"
 export LD_LIBRARY_PATH="$BUILD_DIR/.apt/lib/x86_64-linux-gnu/:$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu:$BUILD_DIR/.apt/usr/lib/i386-linux-gnu:$BUILD_DIR/.apt/usr/lib:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu/fakechroot:$LD_LIBRARY_PATH"
 export LIBRARY_PATH="$BUILD_DIR/.apt/lib/x86_64-linux-gnu/:$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu:$BUILD_DIR/.apt/usr/lib/i386-linux-gnu:$BUILD_DIR/.apt/usr/lib:$LIBRARY_PATH"
@@ -69,6 +69,63 @@ for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
 done
 
 
+
+
+
+topic "setting up fakechroot"
+
+#/tmp/app/.apt
+CHROOT_DIR="$BUILD_DIR/.apt"
+mkdir -p $CHROOT_DIR/bin
+mkdir -p $CHROOT_DIR/usr/bin
+mkdir -p $CHROOT_DIR/lib
+mkdir -p $CHROOT_DIR/etc
+mkdir -p $CHROOT_DIR/var/lib/dpkg/updates
+mkdir -p $CHROOT_DIR/var/lib/dpkg/info
+mkdir -p $CHROOT_DIR/var/log
+mkdir -p $CHROOT_DIR/root
+mkdir -p $CHROOT_DIR/tmp
+mkdir -p $CHROOT_DIR/dev/pts
+
+
+cp  /bin/* $CHROOT_DIR/bin/
+cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
+cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
+
+cp -R /lib/* $CHROOT_DIR/lib/
+ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
+
+cp -R /usr/lib/apt ~/app/.apt/usr/lib/
+cp -R /var/lib/dpkg ~/app/.apt/var/lib/
+cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
+touch $CHROOT_DIR/var/lib/dpkg/status
+ln -s /proc $CHROOT_DIR/proc
+
+
+cp -R /etc/passwd  $CHROOT_DIR/etc/
+cp -R /etc/apt $CHROOT_DIR/etc/
+cp  /etc/hosts $CHROOT_DIR/etc/
+
+
+cp /home/vcap/.bashrc $CHROOT_DIR/root/
+
+
+topic "complete fakechroot: $CHROOT_DIR"
+
+
+cat <<EOF >$BUILD_DIR/.apt/fakeroot.sh
+source $HOME/app/.profile.d/000_apt.sh
+fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
+EOF
+chmod 777 $BUILD_DIR/.apt/fakeroot.sh
+
+$BUILD_DIR/.apt/fakeroot.sh
+
+echo "XXXX `pwd`"
+
+apt-get update
+
+apt-get install 
 for PACKAGE in $(cat $BUILD_DIR/Aptfile); do
   if [[ $PACKAGE == *deb ]]; then
     PACKAGE_NAME=$(basename $PACKAGE .deb)
@@ -93,46 +150,6 @@ done
 
 
 
-topic "complete fakechroot"
-
-#/tmp/app/.apt
-CHROOT_DIR="$BUILD_DIR/.apt"
-mkdir -p $CHROOT_DIR/bin
-mkdir -p $CHROOT_DIR/usr/bin
-mkdir -p $CHROOT_DIR/lib
-mkdir -p $CHROOT_DIR/etc
-mkdir -p $CHROOT_DIR/var/lib/dpkg/updates
-mkdir -p $CHROOT_DIR/var/log
-mkdir -p $CHROOT_DIR/root
-mkdir -p $CHROOT_DIR/tmp
-mkdir -p $CHROOT_DIR/dev/pts
-
-
-cp  /bin/* $CHROOT_DIR/bin/
-cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
-cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
-
-cp -R /lib/* $CHROOT_DIR/lib/
-ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
-cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
-touch $CHROOT_DIR/var/lib/dpkg/status
-ln -s /proc $CHROOT_DIR/proc
-
-
-cp -R /etc/passwd  $CHROOT_DIR/etc/
-cp -R /etc/apt $CHROOT_DIR/etc/
-cp  /etc/hosts $CHROOT_DIR/etc/
-
-
-cp /home/vcap/.bashrc $CHROOT_DIR/root/
-
-# fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
-
-topic "complete fakechroot: $CHROOT_DIR"
-
-
-
-
 
 
 
@@ -145,7 +162,7 @@ topic "Writing profile script"
 mkdir -p $BUILD_DIR/.profile.d
 cat <<EOF >$BUILD_DIR/.profile.d/000_apt.sh
 export APP_HOME="\$HOME/app"
-export PATH="\$APP_HOME/.apt/usr/bin:/usr/sbin:\$PATH"
+export PATH="\$APP_HOME/.apt/usr/bin:/sbin:/usr/sbin:\$PATH"
 export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt/usr/lib/i386-linux-gnu:\$APP_HOME/.apt/usr/lib:\$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/fakechroot:\$LD_LIBRARY_PATH"
 export LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt/usr/lib/i386-linux-gnu:\$APP_HOME/.apt/usr/lib:\$LIBRARY_PATH"
@@ -156,11 +173,6 @@ export PKG_CONFIG_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:\$APP
 
 EOF
 
-cat <<EOF >$BUILD_DIR/.apt/fakeroot.sh
-source $HOME/app/.profile.d/000_apt.sh
-fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
-EOF
-chmod 777 $BUILD_DIR/.apt/fakeroot.sh
 
 cat <<EOF >$BUILD_DIR/.apt/R.sh
 source /root/.bashrc
