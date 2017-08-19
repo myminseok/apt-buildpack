@@ -80,13 +80,13 @@ CHROOT_DIR="$BUILD_DIR/.apt"
 mkdir -p $CHROOT_DIR/bin
 mkdir -p $CHROOT_DIR/lib
 cp -v /bin/* $CHROOT_DIR/bin/
-cp -v /lib/* $CHROOT_DIR/lib/
+cp -vR /lib/* $CHROOT_DIR/lib/
 
-fakechroot fakeroot chroot $CHROOT_DIR /bin/bash
-pwd
-ls
-whoami
-exit
+#fakechroot fakeroot chroot $CHROOT_DIR /bin/bash
+#pwd
+#ls
+#whoami
+#exit
 topic "complete fakechroot: $CHROOT_DIR"
 
 
