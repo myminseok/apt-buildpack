@@ -1,2 +1,5 @@
 libpq-dev
 postgresql-client
+fakeroot
+fakechroot
+

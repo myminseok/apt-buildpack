@@ -1,0 +1,9 @@
+---
+applications:
+- name: a-test
+  buildpack: https://github.com/myminseok/apt-buildpack
+  command: echo "BBBB" && nc -l -p 8080
+  no-route: true
+  env:
+    JBP_LOG_LEVEL: DEBUG
+
