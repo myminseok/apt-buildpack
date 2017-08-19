@@ -97,7 +97,7 @@ cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
 cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
 
 cp -R /usr/lib/gcc/* $CHROOT_DIR/usr/lib/gcc
-cp -R /usr/lib/apt/* $CHROOT_DIR/usr/lib/apt
+ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
 cp -R /usr/include/* $CHROOT_DIR/usr/include
 cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
 cp /var/lib/dpkg/status $CHROOT_DIR/var/lib/dpkg/status
