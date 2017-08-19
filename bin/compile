@@ -104,7 +104,7 @@ cp /var/lib/dpkg/status $CHROOT_DIR/var/lib/dpkg/status
 
 cp -R /usr/share/perl*  $CHROOT_DIR/usr/share/
 cp -R /usr/lib/perl*  $CHROOT_DIR/usr/lib/
-cp -R /usr/share/debconf/* $CHROOT_DIR/usr/share/debconf
+cp -R /usr/share/debconf $CHROOT_DIR/usr/share/
 
 cp /etc/passwd  $CHROOT_DIR/etc/
 cp -R /etc/apt/* $CHROOT_DIR/etc/apt
