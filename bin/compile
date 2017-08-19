@@ -63,7 +63,8 @@ apt-get $APT_OPTIONS update | indent
 topic "Setting up fakechroot"
 apt-get  $APT_OPTIONS -y --force-yes -d install fakeroot | indent
 apt-get  $APT_OPTIONS -y --force-yes -d install fakechroot | indent
-
+apt-get  $APT_OPTIONS -y --force-yes -d install debootstrap | indent
+apt-get  $APT_OPTIONS -y --force-yes -d install schroot | indent
 mkdir -p $BUILD_DIR/.apt
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   topic "Installing $DEB"
