@@ -66,12 +66,12 @@ apt-get  $APT_OPTIONS -y --force-yes -d install fakechroot | indent
 
 mkdir -p $BUILD_DIR/.apt
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
-  topic "Installing $(basename $DEB)"
+  topic "Installing $DEB"
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
 apt-get clean
 
-
+topic "complete fakechroot"
 
 #/tmp/app/.apt
 CHROOT_DIR="$BUILD_DIR/.apt"
