@@ -40,6 +40,26 @@ APT_OPTIONS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state
 topic "Updating apt caches"
 apt-get $APT_OPTIONS update | indent
 
+
+
+topic "Setting up fakechroot"
+apt-get -o debug::nolocking=true -y --force-yes -d install fakeroot | indent
+apt-get -o debug::nolocking=true -y --force-yes -d install fakechroot | indent
+
+#/tmp/app/.apt
+CHROOT_DIR="$BUILD_DIR/.apt"
+mkdir -p $CHROOT_DIR/bin
+mkdir -p $CHROOT_DIR/lib
+cp -v /bin/* $CHROOT_DIR/bin/
+cp -v /lib/* $CHROOT_DIR/lib/
+fakechroot fakeroot chroot $CHROOT_DIR /bin/bash
+pwd
+ls
+whoami
+exit
+topic "complete fakechroot: $CHROOT_DIR"
+
+
 for PACKAGE in $(cat $BUILD_DIR/Aptfile); do
   if [[ $PACKAGE == *deb ]]; then
     PACKAGE_NAME=$(basename $PACKAGE .deb)
@@ -60,6 +80,7 @@ for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   dpkg -x $DEB $BUILD_DIR/.apt/
 done
 
+
 topic "Writing profile script"
 
 mkdir -p $BUILD_DIR/.profile.d
@@ -67,20 +88,24 @@ cat <<EOF >$BUILD_DIR/.profile.d/000_apt.sh
 export APP_HOME="\$HOME/app"
 export PATH="\$APP_HOME/.apt/usr/bin:/usr/sbin:\$PATH"
 export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt/usr/lib/i386-linux-gnu:\$APP_HOME/.apt/usr/lib:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/fakechroot:\$LD_LIBRARY_PATH"
 export LIBRARY_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu:\$APP_HOME/.apt/usr/lib/i386-linux-gnu:\$APP_HOME/.apt/usr/lib:\$LIBRARY_PATH"
 export INCLUDE_PATH="\$APP_HOME/.apt/usr/include:\$INCLUDE_PATH"
 export CPATH="\$INCLUDE_PATH"
 export CPPPATH="\$INCLUDE_PATH"
 export PKG_CONFIG_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:\$APP_HOME/.apt/usr/lib/i386-linux-gnu/pkgconfig:\$APP_HOME/.apt/usr/lib/pkgconfig:\$PKG_CONFIG_PATH"
+
 EOF
 
 export PATH="$BUILD_DIR/.apt/usr/bin:/usr/sbin:$PATH"
 export LD_LIBRARY_PATH="$BUILD_DIR/.apt/lib/x86_64-linux-gnu/:$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu:$BUILD_DIR/.apt/usr/lib/i386-linux-gnu:$BUILD_DIR/.apt/usr/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu/fakechroot:$LD_LIBRARY_PATH"
 export LIBRARY_PATH="$BUILD_DIR/.apt/lib/x86_64-linux-gnu/:$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu:$BUILD_DIR/.apt/usr/lib/i386-linux-gnu:$BUILD_DIR/.apt/usr/lib:$LIBRARY_PATH"
 export INCLUDE_PATH="$BUILD_DIR/.apt/usr/include:$INCLUDE_PATH"
 export CPATH="$INCLUDE_PATH"
 export CPPPATH="$INCLUDE_PATH"
 export PKG_CONFIG_PATH="$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:$BUILD_DIR/.apt/usr/lib/i386-linux-gnu/pkgconfig:$BUILD_DIR/.apt/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
+
 
 #give environment to later buildpacks
 export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH)='  > "$LP_DIR/export"
