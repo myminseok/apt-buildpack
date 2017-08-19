@@ -2,6 +2,8 @@
 # bin/release <build-dir>
 
 cat <<EOF
-
+---
+default_process_types:
+ web: nc -l -p 8080
 EOF
 
