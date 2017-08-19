@@ -56,15 +56,12 @@ topic "Updating apt caches"
 apt-get $APT_OPTIONS update | indent
 
 
-
-
-
-
 topic "Setting up fakechroot"
+## apt-get -o debug::nolocking=true -o dir::cache=. -o dir::state=. -y --force-yes -d install r-base
+
 apt-get  $APT_OPTIONS -y --force-yes -d install fakeroot | indent
 apt-get  $APT_OPTIONS -y --force-yes -d install fakechroot | indent
-apt-get  $APT_OPTIONS -y --force-yes -d install debootstrap | indent
-apt-get  $APT_OPTIONS -y --force-yes -d install schroot | indent
+
 mkdir -p $BUILD_DIR/.apt
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   topic "Installing $DEB"
@@ -79,26 +76,34 @@ mkdir -p $CHROOT_DIR/bin
 mkdir -p $CHROOT_DIR/usr/bin
 mkdir -p $CHROOT_DIR/lib
 mkdir -p $CHROOT_DIR/etc
-mkdir -p $CHROOT_DIR/var/lib
+mkdir -p $CHROOT_DIR/var/lib/dpkg/updates
+mkdir -p $CHROOT_DIR/var/log
 mkdir -p $CHROOT_DIR/root
+mkdir -p $CHROOT_DIR/tmp
+mkdir -p $CHROOT_DIR/dev/pts
+
 
 cp  /bin/* $CHROOT_DIR/bin/
 cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
+cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
+
 cp -R /lib/* $CHROOT_DIR/lib/
+ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
+cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
+touch $CHROOT_DIR/var/lib/dpkg/status
+ln -s /proc $CHROOT_DIR/proc
+
+
 cp -R /etc/passwd  $CHROOT_DIR/etc/
 cp -R /etc/apt $CHROOT_DIR/etc/
-#cp -R /var/lib/dpkg $CHROOT_DIR/var/lib
+cp  /etc/hosts $CHROOT_DIR/etc/
+
+
 cp /home/vcap/.bashrc $CHROOT_DIR/root/
 
 
-cp /etc/bash.bashrc .
-cp -R /etc/bash_completion.d/ .
-
 # fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
-#pwd
-#ls
-#whoami
-#exit
+
 topic "complete fakechroot: $CHROOT_DIR"
 
 
@@ -143,14 +148,17 @@ export PKG_CONFIG_PATH="\$APP_HOME/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:\$APP
 
 EOF
 
-cat <<EOF >$BUILD_DIR/fakeroot.sh
+cat <<EOF >$BUILD_DIR/.apt/fakeroot.sh
 fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
-source /root/.bashrc
-# EDITOR=vim R
-export EDITOR=vim
-
 EOF
-chmod 777 $BUILD_DIR/fakeroot.sh
+chmod 777 $BUILD_DIR/.apt/fakeroot.sh
+
+cat <<EOF >$BUILD_DIR/.apt/R.sh
+source /root/.bashrc
+export EDITOR=vim
+R
+EOF
+chmod 777 $BUILD_DIR/.apt/R.sh
 
 
 #give environment to later buildpacks
