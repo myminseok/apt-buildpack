@@ -68,10 +68,8 @@ mkdir -p $BUILD_DIR/.apt
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   topic "Installing $(basename $DEB)"
   dpkg -x $DEB $BUILD_DIR/.apt/
-  rm -rf $DEB
 done
-
-
+apt-get clean
 
 
 
@@ -79,10 +77,16 @@ done
 CHROOT_DIR="$BUILD_DIR/.apt"
 mkdir -p $CHROOT_DIR/bin
 mkdir -p $CHROOT_DIR/lib
-cp -v /bin/* $CHROOT_DIR/bin/
-cp -vR /lib/* $CHROOT_DIR/lib/
+mkdir -p $CHROOT_DIR/etc
+mkdir -p $CHROOT_DIR/var/lib
+cp  /bin/* $CHROOT_DIR/bin/
+cp -R /lib/* $CHROOT_DIR/lib/
+cp -R /etc/passwd  $CHROOT_DIR/etc/
+cp -R /etc/apt $CHROOT_DIR/etc/
+cp -R /var/lib/dpkg $CHROOT_DIR/var/lib
 
-#fakechroot fakeroot chroot $CHROOT_DIR /bin/bash
+
+# fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
 #pwd
 #ls
 #whoami
