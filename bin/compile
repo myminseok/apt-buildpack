@@ -106,8 +106,8 @@ cp -R /usr/share/perl*  $CHROOT_DIR/usr/share/
 cp -R /usr/lib/perl*  $CHROOT_DIR/usr/lib/
 cp -R /usr/share/debconf $CHROOT_DIR/usr/share/
 
+cp -R /etc/apt $CHROOT_DIR/etc/
 cp /etc/passwd  $CHROOT_DIR/etc/
-cp -R /etc/apt/* $CHROOT_DIR/etc/apt
 cp /etc/hosts $CHROOT_DIR/etc/hosts
 cp /etc/group $CHROOT_DIR/etc/group
 cp /etc/bash.bashrc $CHROOT_DIR/etc/bash.bashrc
