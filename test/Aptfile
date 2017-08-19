@@ -1,4 +1,4 @@
- build-essentia
+build-essential
 libpq-dev
 postgresql-client
 libc6-dev
