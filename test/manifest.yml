@@ -6,6 +6,7 @@ applications:
   memory: 2GB
   disk: 1GB
   no-route: true
+  health-check-type: process
   env:
     JBP_LOG_LEVEL: DEBUG
 
