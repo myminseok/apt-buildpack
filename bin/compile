@@ -117,13 +117,9 @@ fakechroot fakeroot chroot $HOME/app/.apt /bin/bash
 EOF
 chmod 777 $BUILD_DIR/.apt/fakeroot.sh
 
-$BUILD_DIR/.apt/fakeroot.sh
 
-echo "XXXX `pwd`"
 
-apt-get update
 
-apt-get install 
 for PACKAGE in $(cat $BUILD_DIR/Aptfile); do
   if [[ $PACKAGE == *deb ]]; then
     PACKAGE_NAME=$(basename $PACKAGE .deb)
