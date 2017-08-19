@@ -95,11 +95,8 @@ cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
 
 cp -R /lib/* $CHROOT_DIR/lib/
 ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
-
-cp -R /usr/lib/apt ~/app/.apt/usr/lib/
-cp -R /var/lib/dpkg ~/app/.apt/var/lib/
 cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
-touch $CHROOT_DIR/var/lib/dpkg/status
+
 ln -s /proc $CHROOT_DIR/proc
 
 
