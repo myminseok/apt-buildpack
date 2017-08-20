@@ -1,7 +1,8 @@
 ---
 applications:
 - name: a-test
-  buildpack: https://github.com/myminseok/apt-buildpack
+  buildpack: https://github.com/myminseok/apt-buildpack.git#test
+#  buildpack: R-buildpack
   command: echo "BBBB" && nc -l -p 8080
   memory: 2GB
   disk_quota: 1GB
