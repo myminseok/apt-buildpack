@@ -61,6 +61,7 @@ topic "Setting up fakechroot"
 
 apt-get  $APT_OPTIONS -y --force-yes -d install fakeroot | indent
 apt-get  $APT_OPTIONS -y --force-yes -d install fakechroot | indent
+apt-get  $APT_OPTIONS -y --force-yes -d install libc6-dev | indent    # for R package compilation.
 
 mkdir -p $BUILD_DIR/.apt
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
