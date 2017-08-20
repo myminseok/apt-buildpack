@@ -75,14 +75,14 @@ topic "setting up fakechroot"
 
 #/tmp/app/.apt
 CHROOT_DIR="$BUILD_DIR/.apt"
-mkdir -p $CHROOT_DIR/bin
-mkdir -p $CHROOT_DIR/sbin
+
+
 mkdir -p $CHROOT_DIR/usr
-mkdir -p $CHROOT_DIR/usr/lib
-mkdir -p $CHROOT_DIR/usr/share
+
+
 mkdir -p $CHROOT_DIR/lib
-mkdir -p $CHROOT_DIR/etc
-mkdir -p $CHROOT_DIR/var/lib/dpkg/updates
+
+
 mkdir -p $CHROOT_DIR/var/lib/dpkg/info
 mkdir -p $CHROOT_DIR/var/log
 mkdir -p $CHROOT_DIR/var/cache/apt/archives
@@ -91,23 +91,24 @@ mkdir -p $CHROOT_DIR/tmp
 mkdir -p $CHROOT_DIR/dev
 
 
-cp -R /bin/* $CHROOT_DIR/bin/
-cp -R /sbin/* $CHROOT_DIR/sbin/
-cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
-cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
+mkdir -p $CHROOT_DIR/bin && cp -R /bin/* $CHROOT_DIR/bin/
+mkdir -p $CHROOT_DIR/sbin && cp -R /sbin/* $CHROOT_DIR/sbin/
+mkdir -p $CHROOT_DIR/usr/bin && cp -R /usr/bin/* $CHROOT_DIR/usr/bin/
+mkdir -p $CHROOT_DIR/usr/sbin && cp -R /usr/sbin/* $CHROOT_DIR/usr/sbin/
 
-cp -R /usr/lib/gcc/* $CHROOT_DIR/usr/lib/gcc
+mkdir -p $CHROOT_DIR/usr/lib/gcc && cp -R /usr/lib/gcc/* $CHROOT_DIR/usr/lib/gcc
 ln -s /usr/lib/apt $CHROOT_DIR/usr/lib/apt
-cp -R /usr/include/* $CHROOT_DIR/usr/include
+mkdir -p $CHROOT_DIR/usr/include &&  cp -R /usr/include/* $CHROOT_DIR/usr/include
+mkdir -p $CHROOT_DIR/var/lib/dpkg  
 cp /var/lib/dpkg/available $CHROOT_DIR/var/lib/dpkg/
 cp /var/lib/dpkg/status $CHROOT_DIR/var/lib/dpkg/status
 
-cp -R /usr/share/perl*  $CHROOT_DIR/usr/share/
-cp -R /usr/lib/perl*  $CHROOT_DIR/usr/lib/
-cp -R /usr/share/debconf $CHROOT_DIR/usr/share/
+mkdir -p $CHROOT_DIR/usr/share && cp -R /usr/share/perl*  $CHROOT_DIR/usr/share/
+mkdir -p $CHROOT_DIR/usr/lib && cp -R /usr/lib/perl*  $CHROOT_DIR/usr/lib/
+mkdir -p $CHROOT_DIR/usr/share/debconf/ && cp -R /usr/share/debconf/* $CHROOT_DIR/usr/share/debconf/
 
-cp -R /etc/apt $CHROOT_DIR/etc/
-cp /etc/passwd  $CHROOT_DIR/etc/
+mkdir -p $CHROOT_DIR/etc/apt && cp -R /etc/apt/* $CHROOT_DIR/etc/apt/
+cp /etc/passwd  $CHROOT_DIR/etc/passwd
 cp /etc/hosts $CHROOT_DIR/etc/hosts
 cp /etc/group $CHROOT_DIR/etc/group
 cp /etc/bash.bashrc $CHROOT_DIR/etc/bash.bashrc
